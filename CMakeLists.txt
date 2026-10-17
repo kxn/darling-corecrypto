@@ -1,5 +1,17 @@
 project(darling-corecrypto)
 
+# Optional constant-time Curve25519/Ed25519 backend. The caller supplies the
+# reviewed Swift Crypto CCryptoBoringSSL source tree; other builds retain an
+# explicit unsupported error for these operations.
+set(DARLING_CORECRYPTO_BORINGSSL_ROOT "" CACHE PATH "CCryptoBoringSSL source root")
+if (DARLING_CORECRYPTO_BORINGSSL_ROOT)
+	if (NOT TARGET CCryptoBoringSSL)
+		add_subdirectory(${DARLING_CORECRYPTO_BORINGSSL_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/boring)
+	endif()
+	include_directories(${DARLING_CORECRYPTO_BORINGSSL_ROOT}/include)
+	add_definitions(-DDARLING_CORECRYPTO_BORINGSSL=1)
+endif()
+
 add_compile_options(
 	-Wno-return-type
 )
@@ -26,6 +38,7 @@ set(corecrypto_sources
 		src/ccaes.c
 		src/ccsha2xx.c
 		src/ccsha3xx.c
+		src/ccsha3.c
 		src/cczp.c
 		src/ccsha1.c
 		src/ccrsa.c
@@ -108,6 +121,13 @@ else()
 	#
 	# building for non-Apple platforms is only used for quick testing at the moment,
 	# so it doesn't matter that much if we have some unwanted exported symbols
+endif()
+
+if (DARLING_CORECRYPTO_BORINGSSL_ROOT)
+	target_link_libraries(corecrypto PRIVATE CCryptoBoringSSL)
+	if (TARGET corecrypto_static)
+		target_link_libraries(corecrypto_static PUBLIC CCryptoBoringSSL)
+	endif()
 endif()
 
 if (ENABLE_TESTS)

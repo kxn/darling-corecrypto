@@ -265,7 +265,7 @@ struct _ccmode_ctr_key {
 #define CCMODE_FACTORY_CTR_CRYPT(ECB_ENCRYPT) { \
 .size = ccn_sizeof_size(sizeof(struct _ccmode_ctr_key)) + 2 * ccn_sizeof_size((ECB_ENCRYPT)->block_size) + ccn_sizeof_size((ECB_ENCRYPT)->size), \
 .block_size = 1, \
-.ecb_block_size = 1, \
+.ecb_block_size = (ECB_ENCRYPT)->block_size, \
 .init = ccmode_ctr_init, \
 .ctr = ccmode_ctr_crypt, \
 .setctr = ccmode_ctr_setctr, \

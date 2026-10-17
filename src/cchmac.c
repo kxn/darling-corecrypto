@@ -9,11 +9,12 @@ void cchmac_init(const struct ccdigest_info *di, cchmac_ctx_t ctx,
 	{
 		// "keys longer than blocksize are shortened"
 		ccdigest(di, key_len, key, cchmac_data(di, ctx));
-		key_len = di->block_size;
+		key_len = di->output_size;
+		memset(cchmac_data(di, ctx) + key_len, 0, di->block_size - key_len);
 	}
 	else
 	{
-		memcpy(cchmac_data(di, ctx), key, key_len);
+		if (key_len) memcpy(cchmac_data(di, ctx), key, key_len);
 
 		// "keys shorter than blocksize are zero-padded"
 		if (key_len < di->block_size)

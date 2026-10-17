@@ -24,5 +24,14 @@ int cccurve25519(ccec25519key shared_secret, ccec25519secretkey private_key, cce
 // private_key: OUT parameter
 int cccurve25519_make_key_pair(struct ccrng_state* rng, ccec25519pubkey public_key, ccec25519secretkey private_key);
 
+int cccurve25519_make_priv(struct ccrng_state *rng, ccec25519secretkey sk);
+int cccurve25519_make_pub(ccec25519pubkey pk, const ccec25519secretkey sk);
+int cccurve25519_make_pub_with_rng(struct ccrng_state *rng, ccec25519pubkey pk, const ccec25519secretkey sk);
+int cccurve25519_with_rng(struct ccrng_state *rng, ccec25519key out, const ccec25519secretkey sk, const ccec25519base base);
+int cced25519_make_key_pair(const struct ccdigest_info *di, struct ccrng_state *rng, ccec25519pubkey pk, ccec25519secretkey sk);
+int cced25519_make_pub(const struct ccdigest_info *di, ccec25519pubkey pk, const ccec25519secretkey sk);
+int cced25519_sign(const struct ccdigest_info *di, ccec25519signature sig, size_t len, const void *msg, const ccec25519pubkey pk, const ccec25519secretkey sk);
+int cced25519_verify(const struct ccdigest_info *di, size_t len, const void *msg, const ccec25519signature sig, const ccec25519pubkey pk);
+
 #endif
 
